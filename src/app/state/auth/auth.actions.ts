@@ -11,11 +11,20 @@ export const setTokenExpiry = createAction(
     props<{ tokenExpiry: Date }>()
 );
 
+export const setUser = createAction(
+    '[Auth Set User] Set User',
+    props<{ user: User }>()
+);
+
+export const loadUser = createAction(
+    '[Auth Load User] Load User'
+);
+
 export const refreshToken = createAction(
     '[Auth Refresh Token] Refresh Token',
 );
 
 export const refreshTokenSuccess = createAction(
-    '[Auth Refresh Token Success] Refresh Token Success',
+    '[Auth API Refresh Token Success] Refresh Token Success',
     props<{ token: string }>()
 );
