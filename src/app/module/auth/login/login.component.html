@@ -1,0 +1,18 @@
+<h1>Login</h1>
+
+<form [formGroup]="form" (submit)="login()">
+  <div>
+    <input formControlName="email" type="text" />
+  </div>
+  <div>
+    <input formControlName="password" type="password" />
+  </div>
+  <div>
+    <button>Login</button>
+  </div>
+  <div *ngIf="loading$ | async">Loading....</div>
+  <div *ngIf="error$ | async as error">
+    {{ error }}
+  </div>
+  <a [routerLink]="appRoutes.auth.register">Register</a>
+</form>
