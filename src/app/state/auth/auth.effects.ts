@@ -5,9 +5,9 @@ import { AuthHttpService } from "@core/http/auth.http.service";
 import { User } from "@core/model/user.model";
 import { AuthService } from "@core/service/auth.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { EMPTY, of, throwError } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
-import { completeAuth, refreshToken, refreshTokenSuccess, setTokenExpiry } from "./auth.actions";
+import { concat, EMPTY, from, of, throwError } from "rxjs";
+import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { completeAuth, loadUser, refreshToken, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
 
 @Injectable()
 export class AuthEffects {
@@ -15,10 +15,10 @@ export class AuthEffects {
     completeAuth$ = createEffect(() =>
         this.actions$.pipe(
             ofType(completeAuth),
-            map(action => {
-                const { token, tokenExpiry } = this.authService.setToken(action.token);
-                return setTokenExpiry({ tokenExpiry });
-            }),
+            concatMap(({ token }) => {
+                const { tokenExpiry } = this.authService.setToken(token);
+                return from([setTokenExpiry({ tokenExpiry }), loadUser()]);
+            })
         )
     );
 
@@ -28,8 +28,25 @@ export class AuthEffects {
             tap(action => {
                 this.authService.setTokenExpiryTimer(action.tokenExpiry);
             }),
+            // load user after setting token and expiry
+            // map(_ => loadUser())
         ),
         { dispatch: false }
+    );
+
+    loadUser$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(loadUser),
+            switchMap(_ => this.authHttpService.getProfile()
+                .pipe(
+                    map((user: User) => {
+                        return setUser({ user });
+                    }),
+                    // TODO: Complete auth failed
+                    catchError(error => EMPTY)
+                )
+            ),
+        )
     );
 
     refreshToken$ = createEffect(() =>

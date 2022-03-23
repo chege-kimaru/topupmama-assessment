@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import * as fromLogin from '@state/auth/login/login.reducer';
-import * as loginActions from '@state/auth/login/login.actions';
+import * as fromLogin from '../state/login-page/login-page.reducer';
+import * as loginActions from '../state/login-page/login-page.actions';
 import { APP_ROUTES } from '@core/constant/app-routes';
 
 @Component({
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   form: FormGroup;
   error$ = this.store.select(fromLogin.selectError);
-  loading$ = this.store.select(fromLogin.selectLoginLoading);
+  loading$ = this.store.select(fromLogin.selectLoading);
 
   constructor(private fb: FormBuilder, private store: Store) {
     this.form = this.fb.group({
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-    this.store.dispatch(loginActions.login({ authDto: this.form.value }));
+    this.store.dispatch(loginActions.login({ ...this.form.value }));
   }
 
 }

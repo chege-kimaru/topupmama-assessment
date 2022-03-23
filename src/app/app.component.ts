@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
+import { APP_ROUTES } from '@core/constant/app-routes';
 import { Store } from '@ngrx/store';
-import { selectIsLoggedIn, selectToken, selectTokenExpiry } from '@state/auth/auth/auth.reducer';
+import { selectIsLoggedIn, selectToken, selectTokenExpiry, selectUser } from '@state/auth/auth.reducer';
 import * as moment from 'moment';
 import { interval, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,9 +13,12 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class AppComponent implements OnDestroy {
 
+  appRoutes = APP_ROUTES;
+
   token$ = this.store.select(selectToken);
   isLoggedIn$ = this.store.select(selectIsLoggedIn);
   tokenExpiry$ = this.store.select(selectTokenExpiry);
+  user$ = this.store.select(selectUser);
   timeToExpiry = 0;
   timeToExpirySubscription = new Subscription();
 

@@ -6,6 +6,8 @@ import * as AuthActions from "@state/auth/auth.actions";
 import { catchError, exhaustMap, map, switchMap, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from "@angular/common/http";
 import { of } from "rxjs";
+import { Router } from "@angular/router";
+import { APP_ROUTES } from "@core/constant/app-routes";
 
 @Injectable()
 export class LoginPageEffects {
@@ -27,6 +29,7 @@ export class LoginPageEffects {
             ofType(LoginPageActions.loginSuccess),
             tap(_ => {
                 alert('Login Successful');
+                this.router.navigateByUrl(APP_ROUTES.account);
             }),
             map(({ token }) =>
                 AuthActions.completeAuth({ token }))
@@ -36,6 +39,7 @@ export class LoginPageEffects {
 
     constructor(private actions$: Actions,
         private authHttpService: AuthHttpService,
+        private router: Router
     ) {
     }
 }

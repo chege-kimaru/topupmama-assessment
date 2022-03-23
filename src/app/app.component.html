@@ -2,5 +2,8 @@
 <h2>Token: {{ token$ | async }}</h2>
 <h3>Token Expiry: {{ tokenExpiry$ | async }}</h3>
 <h3>Time to Token Expiry: {{ timeToExpiry }}</h3>
+<h3>{{ (user$ | async)?.first_name }}</h3>
+<a [routerLink]="appRoutes.account">Account</a>
+<a [routerLink]="appRoutes.user.list">Users</a>
 
 <router-outlet></router-outlet>

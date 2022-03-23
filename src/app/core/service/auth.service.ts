@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { refreshToken } from "@state/auth/auth/auth.actions";
+import * as AuthActions from "@state/auth/auth.actions";
 import * as moment from 'moment';
 import { interval, Subscription } from "rxjs";
 
@@ -18,7 +18,7 @@ export class AuthService {
         this.tokenExpiryTimerSubscriber = interval(1000).subscribe(_ => {
             if (moment().isAfter(moment(tokenExpiry))) {
                 // refresh token
-                this.store.dispatch(refreshToken());
+                this.store.dispatch(AuthActions.refreshToken());
                 this.tokenExpiryTimerSubscriber.unsubscribe();
             }
         });

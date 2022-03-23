@@ -1,0 +1,8 @@
+<h1>Users</h1>
+
+<ng-container *ngFor="let user of users$ | async">
+  <div>
+    <h4>{{ user.first_name }}</h4>
+    <img [src]="user.avatar" alt="" />
+  </div>
+</ng-container>
