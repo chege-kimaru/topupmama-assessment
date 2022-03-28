@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { interval, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as authActions from '@state/auth/auth.actions';
+import { UtilService } from '@core/service/util.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -27,7 +28,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   appRoutes = APP_ROUTES;
 
-  constructor(private store: Store) {
+  myLocation$ = this.utilService.myLocation();
+
+  constructor(private store: Store, private utilService: UtilService) {
     this.tokenExpiry$.pipe(takeUntil(this.destroy$))
       .subscribe(tokenExpiry => {
         this.timeToExpirySubscription.unsubscribe();
@@ -35,6 +38,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           this.timeToExpirySubscription = interval(1000).pipe(takeUntil(this.destroy$))
             .subscribe(_ => {
               this.timeToExpiry = moment(tokenExpiry).diff(moment(), 'seconds');
+
             });
         else
           this.timeToExpirySubscription.unsubscribe();
@@ -43,6 +47,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+  }
+
+  get timeToExpiryFormated() {
+    return `0${Math.floor(this.timeToExpiry / 60)}:${this.timeToExpiry % 60 < 10 ? '0' : ''}${this.timeToExpiry % 60}`;
   }
 
   logout() {
