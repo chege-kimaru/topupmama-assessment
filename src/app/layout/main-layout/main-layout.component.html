@@ -78,7 +78,8 @@
           id="id01"
           href="javascript:void(0)"
           ngbDropdownToggle
-          ><i class="fa fa-user"></i>{{ (user$ | async)?.first_name }}</a
+          ><i class="fa fa-user"></i
+          >{{ (user$ | async)?.name || (user$ | async)?.first_name }}</a
         >
         <div class="dropdown-menu" aria-labelledby="id01" ngbDropdownMenu>
           <a class="dropdown-item" [routerLink]="appRoutes.account"

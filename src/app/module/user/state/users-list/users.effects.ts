@@ -14,9 +14,11 @@ export class UsersListEffects {
     loadUsers$ = createEffect(() =>
         this.actions$.pipe(
             ofType(loadUsers),
-            exhaustMap(_ => this.userHttpService.getUsers()
+            exhaustMap(({ page }) => this.userHttpService.getUsers(page)
                 .pipe(
-                    map((users: User[]) => loadUsersSuccess({ users })),
+                    map(({ users, page, pageSize, collectionSize }) =>
+                        loadUsersSuccess({ users, page, pageSize, collectionSize })
+                    ),
                     catchError((error: HttpErrorResponse) => of(loadUsersFailure({ error: error.error.error })))
                 )
             )

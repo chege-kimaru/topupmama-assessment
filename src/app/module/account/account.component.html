@@ -1,10 +1,96 @@
-<h1>Account</h1>
-
-<ng-container *ngIf="user$ | async as user">
-  <h2>{{ user.id }}</h2>
-  <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-  <h2>{{ user.email }}</h2>
-  <div>
-    <img [src]="user.avatar" alt="" />
+<div class="page-content">
+  <div class="jumbotron">
+    <h1 class="text-center">My Profile</h1>
+    <form [formGroup]="form" (submit)="updateProfile()">
+      <div class="form-group">
+        <label for="emailInput">Email address</label>
+        <input
+          formControlName="email"
+          type="email"
+          class="form-control"
+          id="emailInput"
+          aria-describedby="emailHelp"
+          readonly
+        />
+        <small id="emailHelp" class="form-text text-muted"
+          >Your email is your account id. You can therefore not edit it</small
+        >
+      </div>
+      <div class="form-group">
+        <label for="emailInput">Name</label>
+        <input
+          formControlName="name"
+          type="text"
+          class="form-control"
+          [class.is-valid]="name?.valid && (name?.dirty || name?.touched)"
+          [class.is-invalid]="name?.invalid && (name?.dirty || name?.touched)"
+          id="nameInput"
+          aria-describedby="nameHelp"
+        />
+        <!-- <div class="valid-feedback">Looks good!</div> -->
+        <div class="invalid-feedback" *ngIf="name?.errors?.['required']">
+          Name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="passwordInput">New Password</label>
+        <div class="input-group">
+          <input
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            [class.is-valid]="
+              password?.valid && (password?.dirty || password?.touched)
+            "
+            [class.is-invalid]="
+              password?.invalid && (password?.dirty || password?.touched)
+            "
+            autocomplete="new-password"
+            id="passwordInput"
+            aria-describedby="passwordHelp"
+          />
+          <div class="input-group-append">
+            <span class="input-group-text"
+              ><i
+                (click)="showPassword = !showPassword"
+                class="fa"
+                [class.fa-eye-slash]="!showPassword"
+                [class.fa-eye]="showPassword"
+                aria-hidden="true"
+              ></i
+            ></span>
+          </div>
+          <div class="invalid-feedback" *ngIf="password?.errors?.['pattern']">
+            Your password must must contain at least one number, one symbol, one
+            uppercase and one lowercase letter and have a min length of 8 and
+            max of 12.
+          </div>
+        </div>
+        <small id="passwordHelp" class="form-text text-muted"
+          >Your password must must contain at least one number, one symbol, one
+          uppercase and one lowercase letter and have a min length of 8 and max
+          of 12.</small
+        >
+      </div>
+      <ngb-alert
+        type="danger"
+        *ngIf="error$ | async as error"
+        [dismissible]="false"
+      >
+        {{ error }}</ngb-alert
+      >
+      <button
+        [disabled]="form?.invalid || (loading$ | async)"
+        type="submit"
+        class="btn btn-primary"
+      >
+        Update Profile
+        <i
+          *ngIf="loading$ | async"
+          class="fa fa-spinner fa-spin"
+          style="margin-left: 1rem"
+        ></i>
+      </button>
+    </form>
   </div>
-</ng-container>
+</div>

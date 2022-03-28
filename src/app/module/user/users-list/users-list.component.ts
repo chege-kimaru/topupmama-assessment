@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { loadUsers } from '../state/users-list/users-list.action';
-import { selectCurrentUser, selectDeleteError, selectDeleting, selectsubmitError, selectSubmitting, selectUsers, selectUserToDelete } from '../state/users-list/users-list.reducer';
+import { selectCollecionSize, selectCurrentUser, selectDeleteError, selectDeleting, selectPage, selectPageSize, selectsubmitError, selectSubmitting, selectUsers, selectUserToDelete } from '../state/users-list/users-list.reducer';
 
 import * as UserActions from '../state/users-list/users-list.action';
 import { User } from '@core/model/user.model';
-import { interval, Subject } from 'rxjs';
+import { combineLatest, interval, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -17,6 +17,13 @@ import { take, takeUntil } from 'rxjs/operators';
 export class UsersListComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
+
+  page$ = this.store.select(selectPage);
+  pageSize$ = this.store.select(selectPageSize);
+  collectionSize$ = this.store.select(selectCollecionSize);
+  page = 1;
+  pageSize = 20;
+  collectionSize = 0;
 
   users$ = this.store.select(selectUsers);
 
@@ -50,6 +57,13 @@ export class UsersListComponent implements OnInit, OnDestroy {
         }
       });
 
+    combineLatest([this.page$, this.pageSize$, this.collectionSize$]).pipe(takeUntil(this.destroy$))
+      .subscribe(([page, pageSize, collectionSize]) => {
+        this.page = page;
+        this.pageSize = pageSize;
+        this.collectionSize = collectionSize;
+      })
+
     this.form = this.fb.group({
       name: ['', Validators.required],
       job: ['', Validators.required],
@@ -65,7 +79,14 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(loadUsers());
+    this.users$.pipe(takeUntil(this.destroy$))
+      .subscribe(users => {
+        if (users?.length > 0) {
+
+        } else {
+          this.store.dispatch(loadUsers({}));
+        }
+      })
   }
 
   startEditing(user: User) {
@@ -78,6 +99,10 @@ export class UsersListComponent implements OnInit, OnDestroy {
 
   deleteUser(user: User) {
     this.store.dispatch(UserActions.deleteUser({ user }));
+  }
+
+  pageChange(page: number) {
+    this.store.dispatch(UserActions.loadUsers({ page }));
   }
 
   submit() {

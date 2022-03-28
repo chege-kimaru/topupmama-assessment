@@ -8,11 +8,13 @@ import { userModuleReducersMap } from './state';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { UsersListEffects } from './state/users-list/users.effects';
+import { PaginationComponent } from './pagination/pagination.component';
 
 
 @NgModule({
   declarations: [
-    UsersListComponent
+    UsersListComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,

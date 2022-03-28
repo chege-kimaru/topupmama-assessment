@@ -7,6 +7,13 @@ export interface State {
     loading: boolean;
     error: string | null;
     users: User[];
+    // to persist added users on refresh
+    addedUsers: User[];
+
+    // for pagination
+    page: number,
+    pageSize: number,
+    collectionSize: number
 
     submitting: boolean,
     submitError: string | null,
@@ -21,6 +28,11 @@ export const initialState: State = {
     loading: false,
     error: null,
     users: [],
+    addedUsers: [],
+
+    page: 1,
+    pageSize: 20,
+    collectionSize: 0,
 
     submitting: false,
     submitError: null,
@@ -36,8 +48,8 @@ export const usersListReducer = createReducer(
     on(loadUsers, (state, _) => {
         return { ...state, loading: true, error: null }
     }),
-    on(loadUsersSuccess, (state, { users }) => {
-        return { ...state, users, loading: false }
+    on(loadUsersSuccess, (state, { users, page, pageSize, collectionSize }) => {
+        return { ...state, users: page == 1 ? [...state.addedUsers, ...users] : users, page, pageSize, collectionSize, loading: false }
     }),
     on(loadUsersFailure, (state, { error }) => {
         return { ...state, error, loading: false }
@@ -55,7 +67,7 @@ export const usersListReducer = createReducer(
         return { ...state, submitting: true, submitError: null }
     }),
     on(addUserSuccess, (state, { user }) => {
-        return { ...state, submitting: false, users: [user, ...state.users] }
+        return { ...state, submitting: false, users: [user, ...state.users], addedUsers: [user, ...state.addedUsers] }
     }),
     on(addUserFailure, (state, { error }) => {
         return { ...state, submitting: false, submitError: error }
@@ -81,7 +93,9 @@ export const usersListReducer = createReducer(
     }),
     on(deleteUserSuccess, (state, _) => {
         return {
-            ...state, deleting: false, users: state.users.filter(u => u.id !== state.userToDelete?.id)
+            ...state, deleting: false,
+            users: state.users.filter(u => u.id !== state.userToDelete?.id),
+            addedUsers: state.addedUsers.filter(u => u.id !== state.userToDelete?.id)
         }
     }),
     on(deleteUserFailure, (state, { error }) => {
@@ -95,6 +109,10 @@ export const selectState = createSelector(selectUserModuleState, (state: UserMod
 export const selectLoading = createSelector(selectState, state => state.loading)
 export const selectError = createSelector(selectState, state => state.error);
 export const selectUsers = createSelector(selectState, state => state.users);
+
+export const selectPage = createSelector(selectState, state => state.page);
+export const selectPageSize = createSelector(selectState, state => state.pageSize);
+export const selectCollecionSize = createSelector(selectState, state => state.collectionSize);
 
 export const selectCurrentUser = createSelector(selectState, state => state.curretUser);
 export const selectSubmitting = createSelector(selectState, state => state.submitting);

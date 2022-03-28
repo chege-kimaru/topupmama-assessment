@@ -3,12 +3,13 @@ import { createAction, props } from "@ngrx/store";
 
 
 export const loadUsers = createAction(
-    '[User List API Load Users] Load Users'
+    '[User List API Load Users] Load Users',
+    props<{ page?: number }>()
 );
 
 export const loadUsersSuccess = createAction(
     '[User List API Load Users Success] Load Users Success',
-    props<{ users: User[] }>()
+    props<{ page: number, pageSize: number, collectionSize: number, users: User[] }>()
 );
 
 export const loadUsersFailure = createAction(
