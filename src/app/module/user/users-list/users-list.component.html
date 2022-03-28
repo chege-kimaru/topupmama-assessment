@@ -4,6 +4,19 @@
   {{ submitError }}
 </div>
 
+<div style="margin: 1rem 0">
+  <ngb-pagination
+    class="d-flex justify-content-center"
+    [collectionSize]="collectionSize"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    [maxSize]="5"
+    [rotate]="true"
+    [boundaryLinks]="true"
+    (pageChange)="pageChange($event)"
+  ></ngb-pagination>
+</div>
+
 <form [formGroup]="form" (submit)="submit()">
   <table class="table">
     <thead>

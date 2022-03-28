@@ -30,7 +30,7 @@ export class LoginPageEffects {
             ofType(LoginPageActions.loginSuccess),
             tap(_ => {
                 this.toastr.success('Welcome back', 'Login successful');
-                this.router.navigateByUrl(APP_ROUTES.account);
+                this.router.navigateByUrl(APP_ROUTES.user.list);
             }),
             map(({ token }) =>
                 AuthActions.completeAuth({ token }))

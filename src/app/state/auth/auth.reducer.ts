@@ -23,7 +23,7 @@ export const authReducer = createReducer(
         return { ...state, token, isLoggedIn: true }
     }),
     on(setUser, (state, { user }) => {
-        return { ...state, user }
+        return { ...state, user: state.user ? { ...state.user, ...user } : user }
     }),
     on(setTokenExpiry, (state, { tokenExpiry }) => {
         return { ...state, tokenExpiry }

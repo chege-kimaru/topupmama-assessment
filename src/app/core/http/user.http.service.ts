@@ -12,9 +12,11 @@ export class UserHttpService {
 
   constructor(private http: HttpClient) { }
 
-  getUsers(): Observable<User[]> {
-    return this.http.get(`${environment.BASE_URL}/users`)
-      .pipe(map((res: any) => res.data));
+  getUsers(page?: number): Observable<{ users: User[], page: number, pageSize: number, collectionSize: number }> {
+    return this.http.get(`${environment.BASE_URL}/users`, { params: { page: String(page) } })
+      .pipe(map((res: any) => {
+        return { users: res.data, page: res.page, pageSize: res.per_page, collectionSize: res.total }
+      }));
   }
 
   addUser(dto: { name: string, job: string }): Observable<User> {
