@@ -10,7 +10,7 @@
       *ngIf="isLoggedIn$ | async"
     >
       <a class="nav-link" href="javascript:void(0)">
-        <i class="fa fa-clock"></i>{{ timeToExpiry }}</a
+        <i class="fa fa-clock"></i>{{ timeToExpiryFormated }}</a
       >
     </li>
     <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn$ | async">
@@ -94,5 +94,13 @@
   </div>
 </nav>
 <div class="content container">
+  <p *ngIf="myLocation$ | async as myLocation" class="text-center">
+    <i class="fa fa-map-marker"></i> Logged in from
+    <strong>{{ myLocation.city }}, {{ myLocation.country }}</strong>
+  </p>
+  <p class="text-center" *ngIf="isLoggedIn$ | async">
+    <i class="fa fa-clock"></i> Session expires in
+    <strong>{{ timeToExpiryFormated }}</strong>
+  </p>
   <router-outlet></router-outlet>
 </div>

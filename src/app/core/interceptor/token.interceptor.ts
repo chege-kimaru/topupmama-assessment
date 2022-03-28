@@ -9,7 +9,8 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/service/auth.service';
 import { Store } from '@ngrx/store';
-import { selectToken } from '@state/auth/auth/auth.reducer';
+import { selectToken } from '@state/auth/auth.reducer';
+import { exhaustMap, retry } from 'rxjs/operators';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -21,15 +22,19 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>,
     next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('inerceptor')
     if (req.headers.has('no-auth')) return next.handle(req.clone());
 
-    const token = this.store.select(selectToken);
-    if (token) {
-      const clonedReq = req.clone({
-        headers: req.headers.set('Authorization', `Bearer ${token}`)
-      });
-      return next.handle(clonedReq);
-    }
-    return next.handle(req.clone());
+    const token$ = this.store.select(selectToken);
+    return token$.pipe(exhaustMap(token => {
+      if (token) {
+        const clonedReq = req.clone({
+          headers: req.headers.set('Authorization', `Bearer ${token}`)
+        });
+        return next.handle(clonedReq);
+      } else {
+        return next.handle(req.clone());
+      }
+    }));
   }
 }

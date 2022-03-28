@@ -17,7 +17,7 @@ export class AuthService {
         this.tokenExpiryTimerSubscriber.unsubscribe();
         if (tokenExpiry)
             this.tokenExpiryTimerSubscriber = interval(1000).subscribe(_ => {
-                if (moment().isAfter(moment(tokenExpiry))) {
+                if (moment(tokenExpiry).diff(moment(), 'minutes') <= 1) {
                     // refresh token
                     this.store.dispatch(AuthActions.refreshToken());
                     this.tokenExpiryTimerSubscriber.unsubscribe();
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     setToken(token: string) {
-        const tokenExpiry = moment().add(20, "seconds");
+        const tokenExpiry = moment().add(10, "minutes");
         localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiry', tokenExpiry.format());
         return { token, tokenExpiry: tokenExpiry.toDate() };
