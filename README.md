@@ -1,27 +1,32 @@
-# TopupmamaAssessment
+# TopUpMama Assessment
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.4.
+[Visit App](topupmamaassessment.netlify.app)
 
-## Development server
+## Tech Used
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Angular 11
+- NgRx
+- Bootstrap 4
+- Ngx-toatr
+- SweetAlert 2
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. `git clone https://github.com/chege-kimaru/topupmama-assessment.git && cd topupmama-assessment`
+2. `npm install`
+3. `ng s -o`
 
-## Build
+## Instructions, Guidelines and Assumptions
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Registration
 
-## Running unit tests
+As per the API, you can only use the following accounts to register a new user:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- george.bluth@reqres.in
+- janet.weaver@reqres.in
+- emma.wong@reqres.in
+- eve.holt@reqres.in
+- charles.morris@reqres.in
+- tracey.ramos@reqres.in
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The api does not persist new data, therefore any new data including passwords, account profile, new users etc will be lost on signing out or refreshing the app.
