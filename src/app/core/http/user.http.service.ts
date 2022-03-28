@@ -16,4 +16,19 @@ export class UserHttpService {
     return this.http.get(`${environment.BASE_URL}/users`)
       .pipe(map((res: any) => res.data));
   }
+
+  addUser(dto: { name: string, job: string }): Observable<User> {
+    return this.http.post(`${environment.BASE_URL}/users`, dto)
+      .pipe(map((res: any) => res));
+  }
+
+  updateUser(userId: number, dto: { name: string, job: string }): Observable<User> {
+    return this.http.put(`${environment.BASE_URL}/users/${userId}`, dto)
+      .pipe(map((res: any) => res));
+  }
+
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${environment.BASE_URL}/users/${userId}`)
+      .pipe(map((res: any) => res));
+  }
 }

@@ -15,13 +15,16 @@ export class AuthService {
 
     setTokenExpiryTimer(tokenExpiry: Date) {
         this.tokenExpiryTimerSubscriber.unsubscribe();
-        this.tokenExpiryTimerSubscriber = interval(1000).subscribe(_ => {
-            if (moment().isAfter(moment(tokenExpiry))) {
-                // refresh token
-                this.store.dispatch(AuthActions.refreshToken());
-                this.tokenExpiryTimerSubscriber.unsubscribe();
-            }
-        });
+        if (tokenExpiry)
+            this.tokenExpiryTimerSubscriber = interval(1000).subscribe(_ => {
+                if (moment().isAfter(moment(tokenExpiry))) {
+                    // refresh token
+                    this.store.dispatch(AuthActions.refreshToken());
+                    this.tokenExpiryTimerSubscriber.unsubscribe();
+                }
+            });
+        else
+            this.tokenExpiryTimerSubscriber.unsubscribe();
     }
 
     getToken(): { token: string | null, tokenExpiry: moment.Moment | null } {

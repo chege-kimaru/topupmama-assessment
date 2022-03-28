@@ -8,6 +8,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { of } from "rxjs";
 import { Router } from "@angular/router";
 import { APP_ROUTES } from "@core/constant/app-routes";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class LoginPageEffects {
@@ -18,7 +19,7 @@ export class LoginPageEffects {
             exhaustMap(({ email, password }) => this.authHttpService.login({ email, password })
                 .pipe(
                     map(({ token }) => LoginPageActions.loginSuccess({ token })),
-                    catchError((error: HttpErrorResponse) => of(LoginPageActions.loginFailure({ error: error.error.error })))
+                    catchError((error: HttpErrorResponse) => of(LoginPageActions.loginFailure({ error: error.error.error || 'Error' })))
                 )
             )
         )
@@ -28,7 +29,7 @@ export class LoginPageEffects {
         this.actions$.pipe(
             ofType(LoginPageActions.loginSuccess),
             tap(_ => {
-                alert('Login Successful');
+                this.toastr.success('Welcome back', 'Login successful');
                 this.router.navigateByUrl(APP_ROUTES.account);
             }),
             map(({ token }) =>
@@ -39,7 +40,8 @@ export class LoginPageEffects {
 
     constructor(private actions$: Actions,
         private authHttpService: AuthHttpService,
-        private router: Router
+        private router: Router,
+        private toastr: ToastrService
     ) {
     }
 }

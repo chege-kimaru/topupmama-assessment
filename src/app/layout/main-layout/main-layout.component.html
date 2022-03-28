@@ -1,0 +1,97 @@
+<nav class="navbar navbar-expand-sm navbar-light fixed-top">
+  <a class="navbar-brand" [routerLink]="appRoutes.home">
+    <img src="assets/images/management.png" width="30" height="30" alt="" />
+  </a>
+  <ul class="navbar-nav main">
+    <li
+      style="margin-right: 2rem"
+      class="nav-item"
+      routerLinkActive="active"
+      *ngIf="isLoggedIn$ | async"
+    >
+      <a class="nav-link" href="javascript:void(0)">
+        <i class="fa fa-clock"></i>{{ timeToExpiry }}</a
+      >
+    </li>
+    <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn$ | async">
+      <a class="nav-link" [routerLink]="appRoutes.user.list">
+        <i class="fa fa-users"></i>Users</a
+      >
+    </li>
+  </ul>
+  <button
+    class="navbar-toggler hidden-sm-up"
+    type="button"
+    (click)="isNavbarCollapsed = !isNavbarCollapsed"
+    data-target="#navbarsDefault"
+    aria-controls="navbarsDefault"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+    style="border-color: white"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      role="img"
+      focusable="false"
+    >
+      <title>Menu</title>
+      <path
+        stroke="white"
+        stroke-linecap="round"
+        stroke-miterlimit="10"
+        stroke-width="2"
+        d="M4 7h22M4 15h22M4 23h22"
+      ></path>
+    </svg>
+  </button>
+  <div
+    [ngbCollapse]="isNavbarCollapsed"
+    class="collapse navbar-collapse"
+    id="navbarsDefault"
+  >
+    <ul class="navbar-nav ml-auto">
+      <ng-container *ngIf="!(isLoggedIn$ | async)">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="appRoutes.auth.login">
+            <i class="fas fa-sign-in-alt"></i>
+            Sign in</a
+          >
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="appRoutes.auth.register">
+            <i class="fa fa-user-plus"></i>
+            Sign up
+          </a>
+        </li>
+      </ng-container>
+      <li
+        class="nav-item dropdown"
+        ngbDropdown
+        *ngIf="isLoggedIn$ | async"
+        routerLinkActive="active"
+      >
+        <a
+          class="nav-link dropdown-toggle"
+          id="id01"
+          href="javascript:void(0)"
+          ngbDropdownToggle
+          ><i class="fa fa-user"></i>{{ (user$ | async)?.first_name }}</a
+        >
+        <div class="dropdown-menu" aria-labelledby="id01" ngbDropdownMenu>
+          <a class="dropdown-item" [routerLink]="appRoutes.account"
+            ><i class="fa fa-user"></i> Profile</a
+          >
+          <a class="dropdown-item" href="javascript:void(0)" (click)="logout()"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="content container">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,22 @@
+.page-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .jumbotron {
+    width: 70%;
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
+  }
+}
+
+.register {
+  font-size: 12px;
+  margin-top: 2rem;
+}
+
+form {
+  margin-top: 1rem;
+}

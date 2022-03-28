@@ -28,3 +28,7 @@ export const refreshTokenSuccess = createAction(
     '[Auth API Refresh Token Success] Refresh Token Success',
     props<{ token: string }>()
 );
+
+export const logout = createAction(
+    '[Auth Logout] Logout'
+);
