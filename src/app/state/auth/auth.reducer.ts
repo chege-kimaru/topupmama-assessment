@@ -1,7 +1,7 @@
 import { User } from "@core/model/user.model";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import * as moment from "moment";
-import { completeAuth, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
+import { completeAuth, logout, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
 
 export interface State {
     token: string | null;
@@ -31,6 +31,15 @@ export const authReducer = createReducer(
     on(refreshTokenSuccess, (state, { token }) => {
         return { ...state, token }
     }),
+    on(logout, (state, _) => {
+        return {
+            ...state,
+            isLoggedIn: false,
+            user: null,
+            token: null,
+            tokenExpiry: null,
+        }
+    })
 );
 
 export const selectAuthState = createFeatureSelector<State>('auth');

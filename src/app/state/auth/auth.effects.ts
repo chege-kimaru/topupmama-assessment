@@ -1,13 +1,15 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { APP_ROUTES } from "@core/constant/app-routes";
 import { AuthHttpService } from "@core/http/auth.http.service";
 import { User } from "@core/model/user.model";
 import { AuthService } from "@core/service/auth.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { ToastrService } from "ngx-toastr";
 import { concat, EMPTY, from, of, throwError } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import { completeAuth, loadUser, refreshToken, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
+import { completeAuth, loadUser, logout, refreshToken, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
 
 @Injectable()
 export class AuthEffects {
@@ -28,8 +30,6 @@ export class AuthEffects {
             tap(action => {
                 this.authService.setTokenExpiryTimer(action.tokenExpiry);
             }),
-            // load user after setting token and expiry
-            // map(_ => loadUser())
         ),
         { dispatch: false }
     );
@@ -52,6 +52,7 @@ export class AuthEffects {
     refreshToken$ = createEffect(() =>
         this.actions$.pipe(
             ofType(refreshToken),
+            tap(_ => this.toastr.info('Refreshing token...')),
             switchMap(_ => this.authHttpService.refreshToken()
                 .pipe(
                     map(({ token }) => refreshTokenSuccess({ token: token! })),
@@ -72,10 +73,21 @@ export class AuthEffects {
         ),
     );
 
+    logout$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(logout),
+            tap(action => {
+                this.router.navigateByUrl(APP_ROUTES.auth.login);
+            }),
+        ),
+        { dispatch: false }
+    );
+
 
     constructor(private actions$: Actions,
         private authService: AuthService,
         private authHttpService: AuthHttpService,
-        private router: Router
+        private router: Router,
+        private toastr: ToastrService
     ) { }
 }

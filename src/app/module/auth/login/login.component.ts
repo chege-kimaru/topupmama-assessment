@@ -18,14 +18,18 @@ export class LoginComponent implements OnInit {
   error$ = this.store.select(fromLogin.selectError);
   loading$ = this.store.select(fromLogin.selectLoading);
 
+  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
+
+  showPassword = false;
+
   constructor(private fb: FormBuilder, private store: Store) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]]
     });
   }
 
-  get email() { return this.form.get('name'); }
+  get email() { return this.form.get('email'); }
 
   get password() { return this.form.get('password'); }
 

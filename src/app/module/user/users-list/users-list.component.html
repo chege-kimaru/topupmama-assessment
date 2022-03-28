@@ -1,8 +1,148 @@
-<h1>Users</h1>
+<h1 class="text-center">Users</h1>
 
-<ng-container *ngFor="let user of users$ | async">
-  <div>
-    <h4>{{ user.first_name }}</h4>
-    <img [src]="user.avatar" alt="" />
-  </div>
-</ng-container>
+<div class="alert alert-danger" *ngIf="submitError$ | async as submitError">
+  {{ submitError }}
+</div>
+
+<form [formGroup]="form" (submit)="submit()">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Job</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- TODO: move this form to its own container -->
+      <tr *ngIf="!(currentUser$ | async)">
+        <td>
+          <div class="form-group">
+            <input
+              [class.is-valid]="name?.valid && (name?.dirty || name?.touched)"
+              [class.is-invalid]="
+                name?.invalid && (name?.dirty || name?.touched)
+              "
+              formControlName="name"
+              type="text"
+              class="form-control"
+              placeholder="Name"
+            />
+            <div class="invalid-feedback" *ngIf="name?.errors?.['required']">
+              Name is required
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <input
+              formControlName="job"
+              type="text"
+              class="form-control"
+              placeholder="Job"
+              [class.is-valid]="job?.valid && (job?.dirty || job?.touched)"
+              [class.is-invalid]="job?.invalid && (job?.dirty || job?.touched)"
+            />
+            <div class="invalid-feedback" *ngIf="job?.errors?.['required']">
+              Job Title is required
+            </div>
+          </div>
+        </td>
+        <td>
+          <button
+            [disabled]="form.invalid || (submitting$ | async)"
+            class="btn btn-primary"
+          >
+            Add
+            <i
+              style="margin-left: 1rem"
+              class="fa fa-spinner fa-spin"
+              *ngIf="submitting$ | async"
+            ></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngFor="let user of users$ | async">
+        <!-- TODO: move this form to its own container -->
+        <ng-container *ngIf="currentUser?.id == user.id; else display">
+          <td>
+            <div class="form-group">
+              <input
+                [class.is-valid]="name?.valid && (name?.dirty || name?.touched)"
+                [class.is-invalid]="
+                  name?.invalid && (name?.dirty || name?.touched)
+                "
+                formControlName="name"
+                type="text"
+                class="form-control"
+                placeholder="Name"
+              />
+              <div class="invalid-feedback" *ngIf="name?.errors?.['required']">
+                Name is required
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <input
+                formControlName="job"
+                type="text"
+                class="form-control"
+                placeholder="Job"
+                [class.is-valid]="job?.valid && (job?.dirty || job?.touched)"
+                [class.is-invalid]="
+                  job?.invalid && (job?.dirty || job?.touched)
+                "
+              />
+              <div class="invalid-feedback" *ngIf="job?.errors?.['required']">
+                Job Title is required
+              </div>
+            </div>
+          </td>
+          <td>
+            <button
+              [disabled]="form.invalid || (submitting$ | async)"
+              class="btn btn-primary"
+            >
+              Update
+              <i
+                style="margin-left: 1rem"
+                class="fa fa-spinner fa-spin"
+                *ngIf="submitting$ | async"
+              ></i>
+            </button>
+            <a (click)="stopEditing()" href="javascript:void(0)"
+              ><i class="fas fa-times"></i
+            ></a>
+          </td>
+        </ng-container>
+        <ng-template #display>
+          <td>{{ user.name || user.first_name + " " + user.last_name }}</td>
+          <td>{{ user.job || "" }}</td>
+          <td>
+            <a
+              href="javascript:void(0)"
+              [swal]="['Delete User', 'Are you sure?', 'question']"
+              (confirm)="deleteUser(user)"
+              ><i
+                class="fas"
+                [class.fa-trash-alt]="
+                  (userToDelete$ | async)?.id != user.id && !(deleting$ | async)
+                "
+                [class.fa-spinner]="
+                  (userToDelete$ | async)?.id == user.id && (deleting$ | async)
+                "
+                [class.fa-spin]="
+                  (userToDelete$ | async)?.id == user.id && (deleting$ | async)
+                "
+              ></i
+            ></a>
+            <a (click)="startEditing(user)" href="javascript:void(0)"
+              ><i class="fas fa-edit"></i
+            ></a>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+</form>

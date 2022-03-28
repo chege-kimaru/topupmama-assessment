@@ -18,21 +18,25 @@ export class RegisterComponent implements OnInit {
   error$ = this.store.select(fromRegister.selectError);
   loading$ = this.store.select(fromRegister.selectLoading);
 
-  constructor(private fb: FormBuilder, private store: Store<fromRegister.State>) {
+  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
+
+  showPassword = false;
+
+  constructor(private fb: FormBuilder, private store: Store) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]]
     });
   }
 
-  get email() { return this.form.get('name'); }
+  get email() { return this.form.get('email'); }
 
   get password() { return this.form.get('password'); }
 
   ngOnInit(): void {
   }
 
-  register(): void {
+  login(): void {
     this.store.dispatch(RegisterActions.register({ ...this.form.value }));
   }
 

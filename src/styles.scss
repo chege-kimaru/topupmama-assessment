@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+// regular style toast
+@import "~ngx-toastr/toastr";
+
+@import "./styles/base";
+
+a {
+  color: rgba(0, 0, 0, 0.6);
+  text-decoration: none;
+
+  &:hover {
+    color: rgba(0, 0, 0, 0.8);
+    text-decoration: none;
+  }
+}

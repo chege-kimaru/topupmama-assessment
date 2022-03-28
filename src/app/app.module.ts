@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +11,10 @@ import * as fromAuthReducer from './state/auth/auth.reducer';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthEffects } from '@state/auth/auth.effects';
 import { environment } from '@env';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LayoutModule } from './layout/layout.module';
+import { ToastrModule } from 'ngx-toastr';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   declarations: [
@@ -19,6 +24,10 @@ import { environment } from '@env';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    LayoutModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    SweetAlert2Module.forRoot(),
     StoreModule.forRoot({
       auth: fromAuthReducer.authReducer
     }),

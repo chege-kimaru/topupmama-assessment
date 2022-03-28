@@ -7,6 +7,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { of } from "rxjs";
 import { Router } from "@angular/router";
 import { APP_ROUTES } from "@core/constant/app-routes";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class RegisterPageEffects {
@@ -17,7 +18,7 @@ export class RegisterPageEffects {
             exhaustMap(({ email, password }) => this.authHttpService.register({ email, password })
                 .pipe(
                     map(({ id, token }) => RegisterPageActions.registerSuccess({ id, token })),
-                    catchError((error: HttpErrorResponse) => of(RegisterPageActions.registerFailure({ error: error.error.error })))
+                    catchError((error: HttpErrorResponse) => of(RegisterPageActions.registerFailure({ error: error.error.error || 'Error' })))
                 )
             )
         )
@@ -27,7 +28,7 @@ export class RegisterPageEffects {
         this.actions$.pipe(
             ofType(RegisterPageActions.registerSuccess),
             tap(({ id }) => {
-                alert('Registration Successful. Please login');
+                this.toastr.success('Please login to continue.', 'Registration was successful')
                 this.router.navigateByUrl(APP_ROUTES.auth.login);
                 // TODO: Store / Get ID from the server
                 localStorage.setItem('userId', String(id));
@@ -39,7 +40,8 @@ export class RegisterPageEffects {
 
     constructor(private actions$: Actions,
         private authHttpService: AuthHttpService,
-        private router: Router
+        private router: Router,
+        private toastr: ToastrService
     ) {
     }
 }
