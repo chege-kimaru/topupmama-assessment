@@ -45,6 +45,8 @@ Similarly, the api does not have an actual refresh token endpoint. To simulate t
 
 In the same way, new users you add will be saved in state and will be lost every time you refresh the page.
 
+Pagination is tied to the server, once you change pages (load data for that page), any updated information will be overwritten with the original data since the API did not persist your updates.
+
 ### Account
 
 Once you edit your account, the new details will only remain as long as you do not refresh the page.
