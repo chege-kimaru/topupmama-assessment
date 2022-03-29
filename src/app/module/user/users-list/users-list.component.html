@@ -28,7 +28,7 @@
     </thead>
     <tbody>
       <!-- TODO: move this form to its own container -->
-      <tr *ngIf="!(currentUser$ | async)">
+      <tr *ngIf="(currentUser$ | async) == null">
         <td>
           <div class="form-group">
             <input
@@ -77,58 +77,66 @@
       </tr>
       <tr *ngFor="let user of users$ | async">
         <!-- TODO: move this form to its own container -->
-        <ng-container *ngIf="currentUser?.id == user.id; else display">
-          <td>
-            <div class="form-group">
-              <input
-                [class.is-valid]="name?.valid && (name?.dirty || name?.touched)"
-                [class.is-invalid]="
-                  name?.invalid && (name?.dirty || name?.touched)
-                "
-                formControlName="name"
-                type="text"
-                class="form-control"
-                placeholder="Name"
-              />
-              <div class="invalid-feedback" *ngIf="name?.errors?.['required']">
-                Name is required
+        <ng-container *ngIf="currentUser$ | async as cU; else display">
+          <ng-container *ngIf="cU.id == user.id; else display">
+            <td>
+              <div class="form-group">
+                <input
+                  [class.is-valid]="
+                    name?.valid && (name?.dirty || name?.touched)
+                  "
+                  [class.is-invalid]="
+                    name?.invalid && (name?.dirty || name?.touched)
+                  "
+                  formControlName="name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Name"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="name?.errors?.['required']"
+                >
+                  Name is required
+                </div>
               </div>
-            </div>
-          </td>
-          <td>
-            <div class="form-group">
-              <input
-                formControlName="job"
-                type="text"
-                class="form-control"
-                placeholder="Job"
-                [class.is-valid]="job?.valid && (job?.dirty || job?.touched)"
-                [class.is-invalid]="
-                  job?.invalid && (job?.dirty || job?.touched)
-                "
-              />
-              <div class="invalid-feedback" *ngIf="job?.errors?.['required']">
-                Job Title is required
+            </td>
+            <td>
+              <div class="form-group">
+                <input
+                  formControlName="job"
+                  type="text"
+                  class="form-control"
+                  placeholder="Job"
+                  [class.is-valid]="job?.valid && (job?.dirty || job?.touched)"
+                  [class.is-invalid]="
+                    job?.invalid && (job?.dirty || job?.touched)
+                  "
+                />
+                <div class="invalid-feedback" *ngIf="job?.errors?.['required']">
+                  Job Title is required
+                </div>
               </div>
-            </div>
-          </td>
-          <td>
-            <button
-              [disabled]="form.invalid || (submitting$ | async)"
-              class="btn btn-primary"
-            >
-              Update
-              <i
-                style="margin-left: 1rem"
-                class="fa fa-spinner fa-spin"
-                *ngIf="submitting$ | async"
-              ></i>
-            </button>
-            <a (click)="stopEditing()" href="javascript:void(0)"
-              ><i class="fas fa-times"></i
-            ></a>
-          </td>
+            </td>
+            <td>
+              <button
+                [disabled]="form.invalid || (submitting$ | async)"
+                class="btn btn-primary"
+              >
+                Update
+                <i
+                  style="margin-left: 1rem"
+                  class="fa fa-spinner fa-spin"
+                  *ngIf="submitting$ | async"
+                ></i>
+              </button>
+              <a (click)="stopEditing()" href="javascript:void(0)"
+                ><i class="fas fa-times"></i
+              ></a>
+            </td>
+          </ng-container>
         </ng-container>
+
         <ng-template #display>
           <td>{{ user.name || user.first_name + " " + user.last_name }}</td>
           <td>{{ user.job || "" }}</td>

@@ -2,7 +2,7 @@
   <div class="jumbotron">
     <h1 class="text-center">Register</h1>
     <p class="text-center">Please register in order to manage users</p>
-    <form [formGroup]="form" (submit)="login()">
+    <form [formGroup]="form" (submit)="register()">
       <div class="form-group">
         <label for="emailInput">Email address</label>
         <input
@@ -68,6 +68,47 @@
           (!@#$%^&*_=+-.), one uppercase and one lowercase letter and have a min
           length of 8 and max of 12.</small
         >
+      </div>
+      <div class="form-group">
+        <label for="cpasswordInput">Confirm Password</label>
+        <div class="input-group">
+          <input
+            formControlName="cpassword"
+            [type]="showCPassword ? 'text' : 'password'"
+            class="form-control"
+            [class.is-valid]="
+              cpassword?.valid && (cpassword?.dirty || cpassword?.touched)
+            "
+            [class.is-invalid]="
+              cpassword?.invalid && (cpassword?.dirty || cpassword?.touched)
+            "
+            id="cpasswordInput"
+            aria-describedby="cpasswordHelp"
+          />
+          <div class="input-group-append">
+            <span class="input-group-text"
+              ><i
+                (click)="showCPassword = !showCPassword"
+                class="fa"
+                [class.fa-eye-slash]="!showCPassword"
+                [class.fa-eye]="showCPassword"
+                aria-hidden="true"
+              ></i
+            ></span>
+          </div>
+          <div class="invalid-feedback" *ngIf="cpassword?.errors?.['required']">
+            Please comfirm your password
+          </div>
+          <div class="invalid-feedback" *ngIf="cpassword?.errors?.['pattern']">
+            Weak password
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="cpassword?.errors?.['mustMatch']"
+          >
+            Passwords must match
+          </div>
+        </div>
       </div>
       <ngb-alert
         type="danger"

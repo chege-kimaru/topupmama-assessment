@@ -17,7 +17,7 @@ export class AccountEffects {
     updateProfile$ = createEffect(() =>
         this.actions$.pipe(
             ofType(AccountActions.updateProfile),
-            exhaustMap(({ name, password }) => this.authHttpService.updateProfile(name, password)
+            switchMap(({ name, password }) => this.authHttpService.updateProfile(name, password)
                 .pipe(
                     map((user: User) => AccountActions.updateProfileSuccess({ user }),
                         catchError((error: HttpErrorResponse) => of(AccountActions.updateProfileFailure({ error: error.error.error || 'Error' })))
