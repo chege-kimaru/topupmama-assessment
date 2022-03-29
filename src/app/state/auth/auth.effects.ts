@@ -6,20 +6,39 @@ import { AuthHttpService } from "@core/http/auth.http.service";
 import { User } from "@core/model/user.model";
 import { AuthService } from "@core/service/auth.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
+import * as moment from "moment";
 import { ToastrService } from "ngx-toastr";
 import { concat, EMPTY, from, of, throwError } from "rxjs";
-import { catchError, concatMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import { completeAuth, loadUser, logout, refreshToken, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
+import { catchError, concatMap, exhaustMap, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { attemptAuth, completeAuth, loadUser, logout, refreshToken, refreshTokenSuccess, setTokenExpiry, setUser } from "./auth.actions";
 
 @Injectable()
 export class AuthEffects {
 
+    attemptAuth$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(attemptAuth),
+            map(_ => {
+                const { token, tokenExpiry } = this.authService.getToken();
+                if (token && moment().isBefore(tokenExpiry))
+                    return completeAuth({ token, authInit: true, tokenExpiry: tokenExpiry!.toDate() });
+                else
+                    throw EMPTY;
+            }),
+        )
+    );
+
     completeAuth$ = createEffect(() =>
         this.actions$.pipe(
             ofType(completeAuth),
-            concatMap(({ token }) => {
-                const { tokenExpiry } = this.authService.setToken(token);
-                return from([setTokenExpiry({ tokenExpiry }), loadUser()]);
+            exhaustMap(({ token, authInit, tokenExpiry }) => {
+                if (authInit) {
+                    this.authService.setTokenExpiryTimer(tokenExpiry!);
+                    return from([loadUser()]);
+                } else {
+                    const { tokenExpiry } = this.authService.setToken(token);
+                    return from([setTokenExpiry({ tokenExpiry }), loadUser()]);
+                }
             })
         )
     );

@@ -18,7 +18,7 @@ export class RegisterComponent implements OnInit {
   error$ = this.store.select(fromRegister.selectError);
   loading$ = this.store.select(fromRegister.selectLoading);
 
-  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
+  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-.]).{8,12}$/;
 
   showPassword = false;
 

@@ -27,7 +27,7 @@ export class AccountComponent implements OnInit, OnDestroy {
   error$ = this.store.select(fromAccount.selectError);
   loading$ = this.store.select(fromAccount.selectLoading);
 
-  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
+  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-.]).{8,12}$/;
 
   showPassword = false;
 
