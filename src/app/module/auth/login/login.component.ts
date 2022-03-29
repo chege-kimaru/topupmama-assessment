@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   error$ = this.store.select(fromLogin.selectError);
   loading$ = this.store.select(fromLogin.selectLoading);
 
-  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$/;
+  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-.]).{8,12}$/;
 
   showPassword = false;
 

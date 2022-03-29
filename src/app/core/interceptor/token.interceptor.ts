@@ -22,7 +22,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>,
     next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('inerceptor')
     if (req.headers.has('no-auth')) return next.handle(req.clone());
 
     const token$ = this.store.select(selectToken);

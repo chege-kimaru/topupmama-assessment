@@ -1,9 +1,13 @@
 import { User } from "@core/model/user.model";
 import { createAction, props } from "@ngrx/store";
 
+export const attemptAuth = createAction(
+    '[Auth Attempt Auth] Attempt Auth'
+);
+
 export const completeAuth = createAction(
     '[Auth Complete Auth] Complete Auth',
-    props<{ token: string }>()
+    props<{ token: string, authInit?: boolean | null, tokenExpiry?: Date | null }>()
 );
 
 export const setTokenExpiry = createAction(

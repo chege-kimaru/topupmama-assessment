@@ -17,9 +17,12 @@ export class AuthHttpService {
   register(dto: { email: string, password: string }): Observable<{ id: number, token: string }> {
     return this.http.post(`${environment.BASE_URL}/register`, dto, { headers: { 'no-auth': 'true' } })
       .pipe(tap((res: any) => {
-        // TODO: store password on the server
-        if (res.id)
+        // TODO: store email and password on the server
+        if (res.id) {
+          localStorage.setItem('email', dto.email);
           localStorage.setItem('password', dto.password);
+        }
+
       }),
         map((res: any) => res)
       );
@@ -37,8 +40,8 @@ export class AuthHttpService {
   // hiting the login endpoint so that we can get a new token
   refreshToken(): Observable<{ token: string }> {
     const dummyCredentials = {
-      email: 'janet.weaver@reqres.in',
-      password: '123456'
+      email: localStorage.getItem('email'),
+      password: localStorage.getItem('password')
     };
     return this.http.post(`${environment.BASE_URL}/login`, dummyCredentials)
       .pipe((res: any) => res);
@@ -57,7 +60,7 @@ export class AuthHttpService {
     return this.http.put(`${environment.BASE_URL}/users/${userId}`, { name })
       .pipe(tap((res: any) => {
         // TODO: store password on the server
-        if (res.name)
+        if (password && res.name)
           localStorage.setItem('password', password);
       }),
         map((res: any) => res)

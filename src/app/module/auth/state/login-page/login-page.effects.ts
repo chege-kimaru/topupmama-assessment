@@ -33,7 +33,7 @@ export class LoginPageEffects {
                 this.router.navigateByUrl(APP_ROUTES.user.list);
             }),
             map(({ token }) =>
-                AuthActions.completeAuth({ token }))
+                AuthActions.completeAuth({ token, authInit: false }))
         ),
     );
 
